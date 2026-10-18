@@ -1,0 +1,48 @@
+# Python environments and tooling
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+build/
+dist/
+
+# Local credentials and editor state
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.DS_Store
+.idea/
+.vscode/
+
+# Downloaded models, generated data, and experiment artifacts
+/data/
+/checkpoints/
+/cache/
+/huggingface/
+/finetune_model/
+/runs/
+/log/
+/logs/
+/result/
+/results/
+/outputs/
+/graph/
+/wandb/
+*.safetensors
+*.pt
+*.pth
+*.ckpt
+nohup.out
+slurm-*.out
+slurm-*.err
+
+# Optional external checkouts
+/third_party/refusal_direction/
