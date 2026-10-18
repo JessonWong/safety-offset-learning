@@ -1,0 +1,11 @@
+include README.md LICENSE THIRD_PARTY_NOTICES.md CONTRIBUTING.md pyproject.toml
+include .env.example .gitignore .editorconfig
+recursive-include requirements *.txt
+recursive-include docs *.md *.json
+recursive-include experiments *.sh *.md
+recursive-include examples *.csv
+recursive-include tests *.py
+recursive-include tools *.py
+include third_party/README.md third_party/.gitignore
+recursive-include .github *.yml
+global-exclude __pycache__ *.py[cod]

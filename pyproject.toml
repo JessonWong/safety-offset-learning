@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "safety-offset-learning"
+version = "0.1.0"
+description = "Fine-tuning, prompt search, and safety analysis for Safety Offset Learning"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT AND CC-BY-NC-4.0"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md", "src/safeoff/generation/search/LICENSE"]
+dynamic = ["dependencies"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<9", "build>=1,<2"]
+analysis = ["scipy==1.15.3"]
+quantization = ["bitsandbytes==0.45.3"]
+refusal-direction = ["jaxtyping==0.2.36", "einops==0.8.1"]
+
+[project.scripts]
+safeoff = "safeoff.cli:main"
+
+[project.urls]
+Repository = "https://github.com/JessonWong/safety-offset-learning"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"safeoff.resources" = ["*.csv"]
+"safeoff.generation.search" = ["LICENSE"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements/base.txt"]}
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --import-mode=importlib"
