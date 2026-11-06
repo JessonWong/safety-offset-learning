@@ -1,6 +1,19 @@
-# Safety Offset Learning
+# Safety Offset Learning: When Benign Fine-Tuning Misaligns LLMs
 
-Research tools for studying how benign fine-tuning changes language-model safety.
+[![arXiv](https://img.shields.io/badge/arXiv-2610.25611-b31b1b.svg)](https://arxiv.org/abs/2610.25611v1)
+[Paper](https://arxiv.org/abs/2610.25611v1) · [PDF](https://arxiv.org/pdf/2610.25611v1)
+
+Research code for **Safety Offset Learning: When Benign Fine-Tuning Misaligns
+LLMs** (arXiv, 2026).
+
+The paper studies how refusal-to-compliance transitions learned on benign inputs
+can generalize to harmful requests. It introduces **SAFEOFF**, a dataset of benign
+instructions rewritten to increase an aligned model's refusal likelihood and
+paired with their original harmless answers. The experiments show that benign
+fine-tuning can weaken safety alignment when the discrepancy between the model's
+initial refusal and the supervised answer is sufficiently large and cannot be
+resolved through a narrow surface-level shortcut.
+
 The Python package is named **`safeoff`**, and all main workflows use the
 **`safeoff`** command. This repository starts from a curated source snapshot of
 LLM_FT and gives its training, evaluation, search, and analysis code a common
@@ -114,6 +127,22 @@ Main Python imports are package-qualified; `PYTHONPATH` modifications and runnin
 from a particular implementation directory are not required. Use `SAFEOFF_ROOT`
 to choose a workspace for experimental data and outputs. Some multi-stage
 protocols record source and shell hashes and require a source checkout.
+
+## Citation
+
+If you use this code or build on this work, please cite:
+
+```bibtex
+@misc{wang2026safetyoffsetlearning,
+  title={Safety Offset Learning: When Benign Fine-Tuning Misaligns {LLMs}},
+  author={Jesson Wang and Zhanhao Hu and Minghao Lin and Yuchen Wu and Aylin Caliskan and Mengyuan Li},
+  year={2026},
+  eprint={2610.25611},
+  archivePrefix={arXiv},
+  primaryClass={cs.LG},
+  url={https://arxiv.org/abs/2610.25611v1}
+}
+```
 
 ## Attribution and license
 
