@@ -1,3 +1,4 @@
+from safeoff.generation.search.chat_templates import CHAT_TEMPLATE_VERSION
 from safeoff.paths import project_root, resource_path
 import argparse
 import csv
@@ -225,7 +226,10 @@ def local_model_fingerprint(reference):
     for child in sorted(path.iterdir()):
         if not child.is_file():
             continue
-        if child.name == "adapter_model.safetensors" or child.suffix == ".json":
+        if (
+            child.name in {"adapter_model.safetensors", "chat_template.jinja"}
+            or child.suffix == ".json"
+        ):
             files.append(
                 {
                     "name": child.name,
@@ -257,6 +261,7 @@ def build_shard_resume_signature(args, shard_start, shard_num_samples):
     config["shard_start"] = shard_start
     config["shard_num_samples"] = shard_num_samples
     config["resume_signature_version"] = RESUME_SIGNATURE_VERSION
+    config["chat_template_version"] = CHAT_TEMPLATE_VERSION
     config["dataset_files"] = []
     for raw_path in args.dataset_data_files or []:
         path = Path(raw_path).expanduser().resolve()
@@ -464,6 +469,7 @@ def build_merged_summary(args, merged_rows):
     return {
         "num_rows": num_rows,
         "strategy": args.strategy,
+        "chat_template_version": CHAT_TEMPLATE_VERSION,
         "dataset_data_files": args.dataset_data_files,
         "instruction_field": args.instruction_field,
         "input_field": args.input_field,

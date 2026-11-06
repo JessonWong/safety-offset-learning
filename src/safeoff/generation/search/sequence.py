@@ -15,7 +15,7 @@ from safeoff.generation.search.utils import add_dummy_dim_to_slice, dotdict, exp
 
 def msg_to_seq(msg, tokenizer, device, context=None):
     if isinstance(msg, str):
-        if msg[0] == "{" and msg[-1] == "}":
+        if msg.startswith("{") and msg.endswith("}"):
             key = msg[1:-1]
             if key in context:
                 msg = context[key]

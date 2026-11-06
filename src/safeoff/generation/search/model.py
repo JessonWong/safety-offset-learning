@@ -9,6 +9,7 @@ from contextlib import nullcontext
 import torch
 import torch.nn as nn
 
+from safeoff.generation.search.chat_templates import resolve_chat_template
 from safeoff.generation.search.sequence import Seq, MergedSeq, msg_to_seq
 from safeoff.generation.search.utils import ReturnStruct, autocast_decorator, compute_perplexity, get_nonascii_toks, llm_loader, loss_seqs
 
@@ -21,6 +22,9 @@ class LLM(nn.Module):
 
         self.model, self.tokenizer, self.embedding_matrix = llm_loader(
             llm_params=params.llm_params, verbose=verbose
+        )
+        self.prompt_template = resolve_chat_template(
+            self.tokenizer, params.prompt_manager.prompt_template
         )
 
         if self.tokenizer.pad_token is None:
@@ -213,20 +217,24 @@ class LLM(nn.Module):
 
     def prepare_prompt(self, context, up_to_key=None, return_key_seq=False):
         seqs = []
-        for msg_dct in self.params.prompt_manager.prompt_template:
+        for msg_dct in self.prompt_template:
             if (
                 up_to_key is not None
-                and up_to_key == msg_dct.key
+                and up_to_key == msg_dct["key"]
                 and not return_key_seq
             ):
                 break
             seq = msg_to_seq(
-                msg=msg_dct.msg,
+                msg=msg_dct["msg"],
                 tokenizer=self.tokenizer,
                 device=self.device,
                 context=context,
             )
-            if up_to_key is not None and up_to_key == msg_dct.key and return_key_seq:
+            if "chat_boundary" in msg_dct:
+                # Native turn delimiters are real input, even when the
+                # tokenizer also uses that token for padding (e.g. EOT).
+                seq.mask = torch.ones_like(seq.ids, dtype=torch.bool)
+            if up_to_key is not None and up_to_key == msg_dct["key"] and return_key_seq:
                 break
             seqs.append(seq)
 

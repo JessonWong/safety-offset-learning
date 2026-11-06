@@ -1,3 +1,4 @@
+from safeoff.generation.search.chat_templates import CHAT_TEMPLATE_VERSION
 from safeoff.paths import project_root, resource_path
 import argparse
 import csv
@@ -337,7 +338,7 @@ def build_prompter_params(args, strategy):
         prompt_template = [
             {
                 "key": "system_message",
-                "msg": "<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\n",
+                "chat_boundary": "user",
             },
             {
                 "key": "instruction_context_prefix",
@@ -358,13 +359,14 @@ def build_prompter_params(args, strategy):
                     "Replacement prompt:\n"
                 ),
             },
+            {"key": "assistant_prefix", "chat_boundary": "assistant"},
             {"key": "replacement", "msg": "{replacement}"},
         ]
     elif strategy == STRATEGY_STANDALONE_SIMPLE_REWRITE:
         prompt_template = [
             {
                 "key": "system_message",
-                "msg": "<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\n",
+                "chat_boundary": "user",
             },
             {
                 "key": "instruction_context_prefix",
@@ -393,7 +395,7 @@ def build_prompter_params(args, strategy):
             },
             {
                 "key": "assistant_prefix",
-                "msg": "<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n",
+                "chat_boundary": "assistant",
             },
             {"key": "replacement", "msg": "{replacement}"},
         ]
@@ -401,7 +403,7 @@ def build_prompter_params(args, strategy):
         prompt_template = [
             {
                 "key": "system_message",
-                "msg": "<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\n",
+                "chat_boundary": "user",
             },
             {
                 "key": "instruction_context_prefix",
@@ -429,7 +431,7 @@ def build_prompter_params(args, strategy):
             },
             {
                 "key": "assistant_prefix",
-                "msg": "<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n",
+                "chat_boundary": "assistant",
             },
             {"key": "replacement", "msg": "{replacement}"},
         ]
@@ -437,7 +439,7 @@ def build_prompter_params(args, strategy):
         prompt_template = [
             {
                 "key": "system_message",
-                "msg": "<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\n",
+                "chat_boundary": "user",
             },
             {"key": "hyper_instruct", "msg": "{instruct}"},
             {"key": "rewrite", "msg": "{rewrite}"},
@@ -488,12 +490,12 @@ def build_target_params(args):
                 "prompt_template": [
                     {
                         "key": "system_message",
-                        "msg": "<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\n",
+                        "chat_boundary": "user",
                     },
                     {"key": "full_instruct", "msg": "{full_instruct}"},
                     {
                         "key": "separator",
-                        "msg": "<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n",
+                        "chat_boundary": "assistant",
                     },
                     {"key": "target", "msg": "{target}"},
                 ]
@@ -1251,6 +1253,7 @@ def build_summary(
             else args.prompter_checkpoint or args.target_checkpoint
         ),
         "strategy": args.strategy,
+        "chat_template_version": CHAT_TEMPLATE_VERSION,
         "refusal_target": (
             ""
             if is_reward_strategy(args.strategy)

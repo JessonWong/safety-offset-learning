@@ -5,6 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import patch
 
 
 import safeoff.generation.sharded as MODULE
@@ -33,6 +34,16 @@ def resume_args(dataset_path: Path, target_field: str = "target") -> SimpleNames
 
 
 class PromptReplacementShardResumeTests(unittest.TestCase):
+    def test_signature_invalidates_shards_using_the_old_chat_format(self):
+        with tempfile.TemporaryDirectory() as directory:
+            dataset_path = Path(directory) / "search_input.csv"
+            dataset_path.write_text("instruction,input,output,target\none,,answer,target\n")
+            args = resume_args(dataset_path)
+            current = MODULE.build_shard_resume_signature(args, 0, 1)
+            with patch.object(MODULE, "CHAT_TEMPLATE_VERSION", "legacy_llama_format"):
+                old = MODULE.build_shard_resume_signature(args, 0, 1)
+        self.assertNotEqual(current["signature"], old["signature"])
+
     def test_signature_tracks_target_aggregation_configuration(self):
         with tempfile.TemporaryDirectory() as directory:
             dataset_path = Path(directory) / "search_input.csv"
